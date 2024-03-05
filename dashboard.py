@@ -54,7 +54,7 @@ def bulan(df):
 def works(df):
     work = df.groupby(by='workingday').agg({
         'count': 'sum'
-    }).reset_index()
+    })
     return work
 
 
