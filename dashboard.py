@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 sns.set(style='dark')
 
+
 # data day_df
 day_df = pd.read_csv("day_data.csv")
 day_df.head()
@@ -100,30 +101,27 @@ column1, column2, column3 = st.columns(3)
 
 with column1:
     rent = daily['count'].sum()
-    st.metric('Total User', value= rent)
+    st.metric('Count User', value= rent)
 
 
 with column2:
     casuals = casual['casual'].sum()
-    st.metric('Casual User', value= casuals)
+    st.metric('Casual', value= casuals)
 
 
 with column3:
     register = regis['registered'].sum()
-    st.metric('Registered User', value= register)
+    st.metric('Register', value= register)
  
-
 
 
 # berdasarkan Bulanan dan Tahun
 st.subheader('Monthly / Bulan')
 fig, ax = plt.subplots(figsize=(18, 6))
-ax.plot(
+ax.bar(
     month.index,
     month['count'],
-    marker='*', 
-    linewidth=5,
-    color='tab:red'
+    color='tab:blue'
 )
 
 for i, j in enumerate(month['count']):
@@ -134,22 +132,38 @@ ax.tick_params(axis='y', labelsize=20)
 st.pyplot(fig)
 
 
-# Berdasarkan Cuaca
-st.subheader('Weatherly/Cuaca')
-fig, ax = plt.subplots(figsize=(12, 6))
-warna=["tab:red", "tab:green", "tab:blue"]
-sns.barplot(
-    x=cuaca.index,
-    y=cuaca['count'],
-    palette=warna
+
+st.subheader('Cuaca')
+# Plot bar chart
+fig, axs = plt.subplots(1, 2, figsize=(20, 8))  # Perbesar ukuran plot
+
+axs[0].bar(
+    cuaca.index,
+    cuaca['count'],
+    color=["tab:orange", "tab:green", "tab:pink"]
 )
 for i, j in enumerate(cuaca['count']):
-    ax.text(i, j + 1, str(j), ha='center', va='bottom', fontsize=12)
+    axs[0].text(i, j + 1, str(j), ha='center', va='bottom', fontsize=12)  
+axs[0].tick_params(axis='x', labelsize=20)
+axs[0].tick_params(axis='y', labelsize=15)
+axs[0].set_title('Bar Chart')
 
-ax.tick_params(axis='x', labelsize=20)
-ax.tick_params(axis='y', labelsize=15)
+warna=["tab:red", "tab:green", "tab:blue"]
+pie = axs[1].pie(
+    cuaca['count'], 
+    colors=warna, 
+    autopct='%1.1f%%',
+    startangle=90  
+)
+axs[1].axis('equal')
+axs[1].set_title('Pie Chart')
+
+legend_labels = cuaca.index
+legend_handles = [plt.Rectangle((0,0),1,1, color=warna[i]) for i in range(len(warna))]
+axs[1].legend(legend_handles, legend_labels, loc='center left', fontsize=8)
+
+# Tampilkan plot
 st.pyplot(fig)
-
 
 
 
@@ -158,13 +172,16 @@ st.subheader('Workday')
 fig, ax = plt.subplots(figsize=(12, 6))
 warna=["tab:orange", "tab:green"]
 sns.barplot(
-    x=work.index,
-    y=work['count'],
+    y=work.index,  
+    x=work['count'],  
     palette=warna
 )
 for i, j in enumerate(work['count']):
-    ax.text(i, j + 1, str(j), ha='center', va='bottom', fontsize=12)
+    ax.text(j + 1, i, str(j), ha='left', va='center', fontsize=12)  
 
-ax.tick_params(axis='x', labelsize=20)
-ax.tick_params(axis='y', labelsize=15)
+ax.tick_params(axis='y', labelsize=20)  
+ax.tick_params(axis='x', labelsize=15)  
 st.pyplot(fig)
+
+
+
